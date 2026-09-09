@@ -1,0 +1,11 @@
+{
+  "previous_term": 24453922692,
+  "proposed_term": 2375569094238,
+  "excluded_integers": 2351115171545,
+  "gap_candidates": [],
+  "gap_equations": 35,
+  "full_21_digit_block_candidates": [2375569094238],
+  "membership_index_1_based": 58,
+  "base4": "202210122330323121132",
+  "exhaustive_cpp_sha256": "5af4fde4874ac149f79f485bdbd2fc91245a1b29e510b600b2b310a0798159c8"
+}

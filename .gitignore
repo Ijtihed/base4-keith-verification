@@ -1,0 +1,6 @@
+exhaustive
+exhaustive.exe
+/gap.tsv
+/endpoints.tsv
+/full-k21.tsv
+__pycache__/

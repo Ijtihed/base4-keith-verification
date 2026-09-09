@@ -1,0 +1,35 @@
+name: Verify
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Check membership certificate
+        run: python verify.py
+      - name: Build exhaustive verifier
+        run: g++ -O3 -std=c++17 -Wall -Wextra -pthread exhaustive.cpp -o exhaustive
+      - name: Check the complete open gap
+        run: |
+          ./exhaustive 24453922693 2375569094237 2 > gap.tsv
+          python check_results.py gap.tsv gap
+      - name: Check both boundary controls
+        run: |
+          ./exhaustive 24453922692 2375569094238 2 > endpoints.tsv
+          python check_results.py endpoints.tsv endpoints
+      - name: Check the complete 21-digit block
+        run: |
+          ./exhaustive 1099511627776 4398046511103 2 > full-k21.tsv
+          python check_results.py full-k21.tsv full-k21
