@@ -1,9 +1,12 @@
 exhaustive
-exhaustive.exe
+search
+search-clang
 *.exe
-/gap.tsv
-/endpoints.tsv
-/full-k21.tsv
 /all.tsv
-/search-*.tsv
+/all-clang.tsv
+/mitm.tsv
+/published.tsv
+/published.txt
+/got.txt
+/want.txt
 __pycache__/

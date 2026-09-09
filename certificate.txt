@@ -77,5 +77,5 @@ Verification procedure:
      The sum must equal the displayed a_m.
   3. The final displayed term is a_58=N.
 
-This certificate proves membership. The minimality argument is in proof.md,
-and its exhaustive computation is implemented in exhaustive.cpp.
+This certificate proves membership for the first new term. The minimality
+argument is in proof.md and the searches are search.cpp and exhaustive.cpp.

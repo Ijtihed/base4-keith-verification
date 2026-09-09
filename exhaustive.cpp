@@ -6,6 +6,7 @@
 #include <mutex>
 #include <set>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <thread>
 #include <utility>
@@ -172,15 +173,46 @@ static std::vector<Task> make_tasks(i128 lower, i128 upper) {
     return tasks;
 }
 
+// Decimal only, no sign, no overflow past the supported ceiling.
+static bool parse_bound(const std::string& text, i128 limit, i128& out) {
+    if (text.empty()) return false;
+    i128 v = 0;
+    for (char c : text) {
+        if (c < '0' || c > '9') return false;
+        if (v > (limit - (c - '0')) / 10) return false;
+        v = 10 * v + (c - '0');
+    }
+    out = v;
+    return true;
+}
+
 int main(int argc, char** argv) {
     if (argc != 3 && argc != 4) {
-        std::cerr << "usage: independent_mitm LOWER UPPER [THREADS]\n";
+        std::cerr << "usage: exhaustive LOWER UPPER [THREADS]\n";
         return 2;
     }
+    // Below 4 there is no two-digit number and the k=1 coefficient never grows,
+    // so make_tasks would not terminate. Above 4^28-1 the sorted table exceeds
+    // 8 GB; use search.cpp for wider blocks.
+    const i128 ceiling = pow4(28) - 1;
     i128 lower = 0, upper = 0;
-    for (char c : std::string(argv[1])) lower = 10 * lower + (c - '0');
-    for (char c : std::string(argv[2])) upper = 10 * upper + (c - '0');
-    unsigned workers = argc == 4 ? unsigned(std::stoul(argv[3])) : 4;
+    if (!parse_bound(argv[1], ceiling, lower) || !parse_bound(argv[2], ceiling, upper)) {
+        std::cerr << "error: bounds must be decimal integers at most 4^28-1\n";
+        return 2;
+    }
+    if (lower < 4 || upper < lower) {
+        std::cerr << "error: need 4 <= LOWER <= UPPER <= 4^28-1\n";
+        return 2;
+    }
+    unsigned workers = 4;
+    if (argc == 4) {
+        try { workers = unsigned(std::stoul(argv[3])); }
+        catch (const std::exception&) { workers = 0; }
+        if (workers < 1 || workers > 256) {
+            std::cerr << "error: THREADS must be between 1 and 256\n";
+            return 2;
+        }
+    }
     auto tasks = make_tasks(lower, upper);
     std::vector<Result> results(tasks.size());
     std::atomic<size_t> next{0};

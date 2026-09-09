@@ -1,94 +1,98 @@
 #!/usr/bin/env python3
-"""Check tab-separated output produced by exhaustive.cpp."""
+"""Audit a search output against expectations recomputed here.
+
+    check_results.py FILE LOWER UPPER
+
+Rebuilds the whole equation list for [LOWER, UPPER] from scratch and requires
+the file to match it exactly, then re-derives every candidate. Nothing is
+hardcoded and no assert is used, so python -O cannot turn the checks off.
+Accepts output from either exhaustive.cpp or search.cpp.
+"""
 
 import csv
 import sys
 
-L = 24_453_922_692
-M = 2_375_569_094_238
-LIMIT = 4**28 - 1
-ALL = [
-    2_375_569_094_238,
-    5_473_352_509_055,
-    9_742_923_197_455,
-    152_038_348_048_545,
-    353_387_237_261_042,
-    1_039_642_015_534_604,
-    2_431_494_812_438_214,
-    5_217_766_440_390_935,
-    47_453_708_818_892_663,
-    57_341_012_950_430_378,
-]
 
-EXPECTED_GAP_INDICES = {
-    18: list(range(48, 57)),
-    19: list(range(51, 60)),
-    20: list(range(54, 63)),
-    21: list(range(57, 65)),
-}
-
-EXPECTED_ALL_INDICES = {
-    18: list(range(48, 57)),
-    19: list(range(51, 60)),
-    20: list(range(54, 63)),
-    21: list(range(57, 66)),
-    22: list(range(60, 69)),
-    23: list(range(62, 72)),
-    24: list(range(65, 75)),
-    25: list(range(68, 78)),
-    26: list(range(71, 81)),
-    27: list(range(74, 84)),
-    28: list(range(77, 87)),
-}
+def require(condition: bool, message: str) -> None:
+    if not condition:
+        raise SystemExit(f"FAIL: {message}")
 
 
-def candidates(rows: list[dict[str, str]]) -> list[int]:
-    return sorted({
-        int(value)
-        for row in rows
-        for value in row["candidates"].split(",")
-        if value
-    })
+def base4(n: int) -> list[int]:
+    d = []
+    while n:
+        d.append(n % 4)
+        n //= 4
+    return d[::-1] or [0]
+
+
+def hit_index(n: int) -> int | None:
+    d = base4(n)
+    k = len(d)
+    if k < 2:
+        return None
+    terms = d[:]
+    while terms[-1] < n:
+        terms.append(sum(terms[-k:]))
+    return len(terms) if terms[-1] == n else None
+
+
+def expected_equations(lower: int, upper: int) -> list[tuple[int, int, int, int]]:
+    """Every (k, m, lo, hi) whose recurrence term can land in [lower, upper]."""
+    out = []
+    for k in range(len(base4(lower)), len(base4(upper)) + 1):
+        lo, hi = max(lower, 4 ** (k - 1)), min(upper, 4**k - 1)
+        if lo > hi:
+            continue
+        rows = [[1 if i == j else 0 for i in range(k)] for j in range(k)]
+        m = k
+        while True:
+            m += 1
+            c = [sum(rows[-b][i] for b in range(1, k + 1)) for i in range(k)]
+            rows.append(c)
+            if c[0] > hi:  # smallest legal value already past the block
+                break
+            if 3 * sum(c) >= lo:  # largest legal value reaches the block
+                out.append((k, m, lo, hi))
+    return out
 
 
 def main() -> None:
-    modes = {"gap", "endpoints", "full-k21", "all"}
-    if len(sys.argv) != 3 or sys.argv[2] not in modes:
-        raise SystemExit("usage: check_results.py FILE {gap|endpoints|full-k21|all}")
+    if len(sys.argv) != 4:
+        raise SystemExit("usage: check_results.py FILE LOWER UPPER")
+    path, lower, upper = sys.argv[1], int(sys.argv[2]), int(sys.argv[3])
 
-    with open(sys.argv[1], newline="", encoding="utf-8-sig") as handle:
+    with open(path, newline="", encoding="utf-8-sig") as handle:
         rows = list(csv.DictReader(handle, delimiter="\t"))
-    assert rows, "no result rows"
+    require(rows, "no result rows")
 
-    found = candidates(rows)
-    mode = sys.argv[2]
-    if mode == "gap":
-        by_k: dict[int, list[int]] = {}
-        for row in rows:
-            by_k.setdefault(int(row["k"]), []).append(int(row["m"]))
-        assert by_k == EXPECTED_GAP_INDICES
-        assert found == []
-    elif mode == "endpoints":
-        assert found == [L, M]
-    elif mode == "full-k21":
-        assert [int(row["m"]) for row in rows] == list(range(57, 66))
-        assert found == [M]
-    else:
-        by_k: dict[int, list[dict[str, str]]] = {}
-        for row in rows:
-            by_k.setdefault(int(row["k"]), []).append(row)
-        assert {
-            k: [int(row["m"]) for row in block]
-            for k, block in by_k.items()
-        } == EXPECTED_ALL_INDICES
-        for k, block in by_k.items():
-            expected_lower = L + 1 if k == 18 else 4 ** (k - 1)
-            expected_upper = 4**k - 1
-            assert {int(row["lower"]) for row in block} == {expected_lower}
-            assert {int(row["upper"]) for row in block} == {expected_upper}
-        assert found == ALL
+    got = [(int(r["k"]), int(r["m"]), int(r["lower"]), int(r["upper"])) for r in rows]
+    require(got == expected_equations(lower, upper), "equation list does not match")
 
-    print(f"PASS: {mode}; {len(rows)} equations; candidates={found}")
+    # Every width in range is covered, once, with no gap between blocks.
+    blocks = sorted({(k, lo, hi) for k, _, lo, hi in got})
+    require(blocks[0][1] == lower, "first block does not start at LOWER")
+    require(blocks[-1][2] == upper, "last block does not end at UPPER")
+    for (_, _, end), (_, start, _) in zip(blocks, blocks[1:]):
+        require(start == end + 1, f"gap in coverage at {end}")
+
+    found = []
+    for row in rows:
+        k, m, lo, hi = int(row["k"]), int(row["m"]), int(row["lower"]), int(row["upper"])
+        for text in (row["candidates"] or "").split(","):
+            if not text:
+                continue
+            n = int(text)
+            require(lo <= n <= hi, f"{n} is outside its block")
+            require(len(base4(n)) == k, f"{n} is not {k} digits wide")
+            require(hit_index(n) == m, f"{n} does not first appear at position {m}")
+            found.append(n)
+
+    require(len(set(found)) == len(found), "a candidate was reported twice")
+    found.sort()
+    print(f"PASS: {len(rows)} equations, {len(found)} candidates in [{lower}, {upper}]")
+    for n in found:
+        print(f"  {n}")
 
 
 if __name__ == "__main__":

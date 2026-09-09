@@ -11,29 +11,52 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-      - name: Check membership certificate
+
+      - name: Check the term list
         run: python verify.py
-      - name: Build exhaustive verifier
-        run: g++ -O3 -std=c++17 -Wall -Wextra -pthread exhaustive.cpp -o exhaustive
-      - name: Check the complete open gap
+
+      - name: Build
         run: |
-          ./exhaustive 24453922693 2375569094237 2 > gap.tsv
-          python check_results.py gap.tsv gap
-      - name: Check both boundary controls
+          g++ -O3 -std=c++17 -Wall -Wextra -pthread search.cpp -o search
+          g++ -O3 -std=c++17 -Wall -Wextra -pthread exhaustive.cpp -o exhaustive
+          clang++ -O3 -std=c++17 -Wall -Wextra -pthread search.cpp -o search-clang
+
+      - name: Reproduce the 33 published terms
         run: |
-          ./exhaustive 24453922692 2375569094238 2 > endpoints.tsv
-          python check_results.py endpoints.tsv endpoints
-      - name: Check the complete 21-digit block
+          ./search 4 24453922692 2 > published.tsv
+          python check_results.py published.tsv 4 24453922692 | tail -n +2 | tr -d ' \r' > got.txt
+          head -33 b188196.txt | cut -d' ' -f2 > want.txt
+          diff got.txt want.txt
+          echo "search reproduces OEIS a(1) through a(33)"
+
+      - name: Full range through 4^34-1
         run: |
-          ./exhaustive 1099511627776 4398046511103 2 > full-k21.tsv
-          python check_results.py full-k21.tsv full-k21
-      - name: Check the full continuation through 28 digits
+          ./search 24453922693 295147905179352825855 2 > all.tsv
+          python check_results.py all.tsv 24453922693 295147905179352825855
+
+      - name: Same range under clang
         run: |
-          ./exhaustive 24453922693 72057594037927935 1 > all.tsv
-          python check_results.py all.tsv all
+          ./search-clang 24453922693 295147905179352825855 2 > all-clang.tsv
+          diff all.tsv all-clang.tsv
+
+      - name: Meet in the middle through 4^28-1
+        run: |
+          ./exhaustive 24453922693 72057594037927935 2 > mitm.tsv
+          python check_results.py mitm.tsv 24453922693 72057594037927935
+
+      - name: Source hashes match minimality.json
+        run: python check_hashes.py
+
+      - name: Bad input is rejected
+        run: |
+          ! ./exhaustive 1 100 1
+          ! ./exhaustive abc 100 1
+          ! ./exhaustive 100 4 1
+          ! ./search 1 100
+          ! ./search abc 100
