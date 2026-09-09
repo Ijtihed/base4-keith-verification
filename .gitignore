@@ -1,6 +1,9 @@
 exhaustive
 exhaustive.exe
+*.exe
 /gap.tsv
 /endpoints.tsv
 /full-k21.tsv
+/all.tsv
+/search-*.tsv
 __pycache__/

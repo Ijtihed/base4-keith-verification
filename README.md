@@ -1,35 +1,33 @@
-# Next base-4 Keith number
+# Base 4 Keith numbers
 
-Proposed next term of [OEIS A188196](https://oeis.org/A188196):
+This repo verifies a proposed continuation of [OEIS A188196](https://oeis.org/A188196).
+
+The published list ends at:
 
 ```text
-2375569094238 = 202210122330323121132 (base 4)
+a(33) = 24453922692
 ```
 
-It occurs at recurrence term 58. No base-4 Keith number lies between the current last term, `24453922692`, and this value.
+The exact search found the next ten terms, `a(34)` through `a(43)`. See [terms.tsv](terms.tsv).
 
-## Verify
-
-Membership:
+## Quick check
 
 ```bash
 python verify.py
 ```
 
-Minimality:
+This checks directly that every listed value is a base 4 Keith number.
+
+## Full minimality check
 
 ```bash
 g++ -O3 -std=c++17 -pthread exhaustive.cpp -o exhaustive
-./exhaustive 24453922693 2375569094237 4 > gap.tsv
-python check_results.py gap.tsv gap
+./exhaustive 24453922693 72057594037927935 1 > all.tsv
+python check_results.py all.tsv all
 ```
 
-Expected result:
+This exhausts every integer after `a(33)` through `4^28 - 1`. It takes about 15 minutes and about 2 GB of memory on the machine used here.
 
-```text
-PASS: gap; 35 equations; candidates=[]
-```
+The search found exactly the ten values in [terms.tsv](terms.tsv). Therefore they are consecutive, not merely examples. No claim is made about `a(44)`.
 
-The public `IsKeith[n,b]` verifier on [OEIS A188196](https://oeis.org/A188196) also returns `True` for `IsKeith[2375569094238,4]`.
-
-See [proof.md](proof.md) for the exhaustive argument. GitHub Actions reruns all checks on Ubuntu.
+See [method.md](method.md) for the idea and prior work, and [proof.md](proof.md) for the minimality argument.

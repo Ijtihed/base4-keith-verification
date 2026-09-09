@@ -1,80 +1,26 @@
-# Proof outline
+# Why the terms are minimal
 
-Let
+The current published last term of A188196 is:
 
 ```text
 L = 24453922692
-M = 2375569094238
 ```
 
-and write a k-digit base-4 integer as `d_1...d_k`, with `d_1` in `{1,2,3}` and every other digit in `{0,1,2,3}`.
-
-## Membership
-
-The digits of M are
+The search covers the single uninterrupted interval:
 
 ```text
-2,0,2,2,1,0,1,2,2,3,3,0,3,2,3,1,2,1,1,3,2.
+L + 1 through 4^28 - 1
 ```
 
-Starting with these 21 values and repeatedly summing the preceding 21 terms gives M at the 58th term. The complete sequence is in `certificate.txt` and is checked by `verify.py`.
+For each base 4 digit length, `exhaustive.cpp` generates every recurrence position that can possibly hit this interval. The lower and upper bounds use the smallest and largest legal digit assignments. Monotonic recurrence coefficients prove that no earlier or later position can work.
 
-## Digit equations
+At each possible position, the Keith condition is an exact linear equation in the digits. The program enumerates every base 4 digit assignment by splitting the equation into two halves. It keeps duplicate partial sums and reconstructs every matching number. Each match is checked again by direct Keith recurrence simulation.
 
-Let `C_i` be the i-th coordinate vector for `1 <= i <= k`, and define
+The complete search output contains exactly the values in `terms.tsv`, in increasing order. Therefore:
 
-```text
-C_m = C_(m-k) + ... + C_(m-1),  m > k.
-```
+- every listed value is a base 4 Keith number;
+- no base 4 Keith number was skipped between `L` and any listed value;
+- the values are exactly `a(34)` through `a(43)`;
+- `a(44)` is greater than `4^28 - 1`, but is not determined here.
 
-Induction gives `a_m=C_m·d`. Let
-
-```text
-P = (4^(k-1), 4^(k-2), ..., 1).
-```
-
-Then a hit at index m is equivalent to
-
-```text
-(P-C_m)·d = 0.
-```
-
-This is exact. No approximation, sampling, or probabilistic test is used.
-
-## Complete index range
-
-All coefficients and digits are nonnegative. At index m:
-
-- the smallest possible recurrence value is `C_(m,1)`, attained by digits `[1,0,...,0]`;
-- the largest is `3 sum(C_(m,i))`, attained by the all-3 digits.
-
-An index is too early if the maximum is below the interval. Once the minimum exceeds the interval, that index and every later index are impossible because generated recurrence terms are nondecreasing.
-
-For the open gap `(L,M)`, the complete equation ranges are:
-
-| Digits | Integer interval | Indices checked | First later index excluded |
-|---:|---:|---:|---:|
-| 18 | 24453922693 to 68719476735 | 48 to 56 | 57 |
-| 19 | 68719476736 to 274877906943 | 51 to 59 | 60 |
-| 20 | 274877906944 to 1099511627775 | 54 to 62 | 63 |
-| 21 | 1099511627776 to 2375569094237 | 57 to 64 | 65 |
-
-These four consecutive intervals contain exactly
-
-```text
-M-L-1 = 2351115171545
-```
-
-integers.
-
-## Exact search
-
-For each equation, `exhaustive.cpp` splits the digits into two groups, enumerates every legal assignment on both sides, sorts one side by its exact weighted sum, and matches every equal opposite sum. Duplicate partial sums are retained, so collisions cannot remove solutions. Candidate integers are reconstructed exactly and filtered against the inclusive interval.
-
-The gap search returns no candidates. The same program:
-
-- reproduces all 33 published A188196 terms through L;
-- returns exactly L and M when the interval is expanded to `[L,M]`;
-- finds M as the only Keith number in the complete 21-digit block `[4^20,4^21-1]`.
-
-The implementation uses signed 128-bit integers. The largest proved absolute partial-sum bound in the reviewed gap is below `2.60*10^14`, far below even the signed 64-bit maximum of approximately `9.22*10^18`.
+The candidate memberships were also checked with Python arbitrary-precision integers and the public `IsKeith[n,b]` function on OEIS. The exhaustive blocks were compiled independently with GCC and Clang, with identical mathematical results. A separate branch-and-bound implementation also reproduced the complete 22-digit block.

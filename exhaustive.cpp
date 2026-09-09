@@ -94,7 +94,8 @@ static Result solve_mitm(const Task& t) {
         weight[i] = place[i] - t.coeff[i];
         out.max_abs_weight = std::max(out.max_abs_weight, abs128(weight[i]));
     }
-    const int split = (t.k + 1) / 2; // leading side larger; sorted side <= 4^10 here
+    // Use a smaller sorted table for the 28-digit block.
+    const int split = t.k >= 28 ? (t.k + 2) / 2 : (t.k + 1) / 2;
     std::vector<Item> right;
     uint64_t reserve = uint64_t(1) << (2 * (t.k - split));
     right.reserve(reserve);

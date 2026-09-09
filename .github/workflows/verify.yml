@@ -11,7 +11,7 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -33,3 +33,7 @@ jobs:
         run: |
           ./exhaustive 1099511627776 4398046511103 2 > full-k21.tsv
           python check_results.py full-k21.tsv full-k21
+      - name: Check the full continuation through 28 digits
+        run: |
+          ./exhaustive 24453922693 72057594037927935 1 > all.tsv
+          python check_results.py all.tsv all
