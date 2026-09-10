@@ -1,55 +1,76 @@
-# Base 4 Keith numbers
+# Keith numbers
 
-This repo extends [OEIS A188196](https://oeis.org/A188196).
+Exhaustive searches for Keith numbers in bases 3 to 10.
 
-The published list ends at:
+Base 4 is [A188196](https://oeis.org/A188196). The published list ended at
+`a(33) = 24453922692`. This repo found `a(34)` through `a(67)`. The first 57 went
+into OEIS on 2026-09-10.
 
-```text
-a(33) = 24453922692
-```
+The same solver runs in any base. Every published term was reproduced from
+scratch first, then the search carried on.
 
-An exact search found the next twenty-four terms, `a(34)` through `a(57)`. The new
-ones are in [terms.tsv](terms.tsv); the whole list from `a(1)` is in
-[b188196.txt](b188196.txt).
+| base | OEIS | was | now | new | searched through |
+|---:|---|---:|---:|---:|---|
+| 3 | [A188195](https://oeis.org/A188195) | 46 | 107 | +61 | `3^64 - 1` |
+| 4 | [A188196](https://oeis.org/A188196) | 33 | 67 | +34 | `4^39 - 1` |
+| 5 | [A187713](https://oeis.org/A187713) | 42 | 92 | +50 | `5^30 - 1` |
+| 6 | [A188197](https://oeis.org/A188197) | 58 | 83 | +25 | `6^24 - 1` |
+| 7 | [A188198](https://oeis.org/A188198) | 53 | 77 | +24 | `7^22 - 1` |
+| 8 | [A188199](https://oeis.org/A188199) | 55 | 70 | +15 | `8^20 - 1` |
+| 9 | [A188200](https://oeis.org/A188200) | 68 | 82 | +14 | `9^18 - 1` |
+| | | **355** | **578** | **+223** | |
 
-## Quick check
+Base 10 was a control, not an extension. [A007629](https://oeis.org/A007629) is
+already known to 45 digits by lattice reduction, which beats this method above
+base 4. The run to `10^17` returned exactly the 63 known terms in that range.
+
+Details and the minimality certificate are in [multibase](multibase).
+
+## Check the terms
 
 ```bash
 python verify.py
 ```
 
-Runs the base 4 Keith recurrence on every listed value and checks the widths,
-the hit positions, and the two files against each other.
+Runs the recurrence on every term and checks the two files against each other.
 
-## Full minimality check
+## Check nothing was missed
 
 ```bash
 g++ -O3 -std=c++17 -pthread search.cpp -o search
-./search 24453922693 295147905179352825855 12 > all.tsv
-python check_results.py all.tsv 24453922693 295147905179352825855
+./search 24453922693 302231454903657293676543 4 > all.tsv
+python check_results.py all.tsv 24453922693 302231454903657293676543
 ```
 
-This covers every integer after `a(33)` through `4^34 - 1`. It takes about fifteen
-seconds on twelve threads and needs almost no memory. The result is exactly the
-twenty-four values in `terms.tsv`, so they are consecutive rather than a
-selection. Any further term is greater than `4^34 - 1`.
+This covers every integer from `a(33)+1` to `4^39 - 1`, so the terms are
+consecutive and not a selection. About forty minutes on four threads.
 
-`check_results.py` rebuilds the expected equation list itself and re-derives every
-candidate, so it fails if the search skipped a position or mislabelled a row.
+`check_results.py` rebuilds the expected equation list on its own, so it fails if
+the search skipped a position.
 
-## Second implementation
+## Second opinion
 
-`exhaustive.cpp` solves the same equations by meet in the middle. It agrees with
-`search.cpp` on everything up to `4^28 - 1`, which is as far as its sorted table
-fits in memory:
+`exhaustive.cpp` solves the same equations by meet in the middle. It agrees up to
+`4^28 - 1`, which is as far as its table fits in memory.
 
 ```bash
 g++ -O3 -std=c++17 -pthread exhaustive.cpp -o exhaustive
-./exhaustive 24453922693 72057594037927935 12 > mitm.tsv
+./exhaustive 24453922693 72057594037927935 4 > mitm.tsv
 python check_results.py mitm.tsv 24453922693 72057594037927935
 ```
 
-Recorded output from both is in [results](results).
+## Files
 
-See [method.md](method.md) for the idea and prior work, and [proof.md](proof.md)
-for the minimality argument.
+| | |
+|---|---|
+| `search.cpp` | branch and bound, base 4 |
+| `multibase.cpp` | same solver, any base |
+| `exhaustive.cpp` | meet in the middle, second opinion |
+| `terms.tsv`, `b188196.txt` | the base 4 terms |
+| `multibase/` | other bases, minimality certificate, OEIS submission pack |
+| `results/` | recorded search output |
+| `notes.md` | decisions, measured tradeoffs, dead ends |
+
+[method.md](method.md) explains how it works, [proof.md](proof.md) why it is
+complete, and [notes.md](notes.md) what was tried, what it cost, and what did
+not work.

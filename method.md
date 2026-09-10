@@ -1,50 +1,55 @@
 # Method
 
-Suppose a base 4 number has digits `d1,...,dk`.
-
-Every later term of its Keith recurrence is a linear combination of those digits.
-For each possible hit position `m`, the condition that the recurrence term equals
-the original number becomes one exact equation:
+Take a number with base `b` digits `d1,...,dk`. Every later term of its Keith
+recurrence is a fixed linear combination of those digits. So for each possible
+hit position `m`, asking whether the number equals that term is one exact
+equation:
 
 ```text
-(base-4 place values - recurrence coefficients) dot digits = 0
+(place values - recurrence coefficients) dot digits = 0
 ```
 
-Only finitely many hit positions need checking. Before the first possible
-position, even the largest digit assignment is too small. After the last, even
-the smallest leading-digit assignment is too large, and the coefficients of the
-generated terms never decrease, so no later position can work either.
+Only a few positions need checking. Before the first, even the largest digits
+give a value too small. After the last, even the smallest leading digit gives one
+too large, and the coefficients of the generated terms never shrink, so no later
+position can work either. In practice this leaves 6 to 12 equations per digit
+length.
 
-Two programs solve those equations.
+Two programs solve them.
 
-`exhaustive.cpp` splits the digits into two groups, enumerates every legal
-assignment on each side, sorts one side by its weighted sum, and finds equal
-opposite sums by binary search. Duplicate sums are kept. The sorted table holds
-`4^(k/2)` entries, which is 2 GB at 28 digits and 8 GB at 29, so this is the
-practical ceiling.
+`exhaustive.cpp` splits the digits in two, enumerates each side, sorts one side,
+and finds matching sums by binary search. It checks every legal digit string.
+The sorted table holds `b^(k/2)` entries: 2 GB at 28 base-4 digits, 8 GB at 29.
+That is the ceiling.
 
-`search.cpp` avoids the table. Shifting every weight up by the most negative one
-makes them all nonnegative, at the cost of turning the right-hand side into
-`shift * digitsum`. Fixing the digit sum then makes the reachable interval of any
-remaining suffix tight, so branch and bound prunes hard. It needs no table and
-reaches 34 digits in seconds.
+`search.cpp` avoids the table. Adding the most negative weight to every weight
+makes them all non-negative, which turns the right-hand side into
+`shift * digitsum`. Fixing the digit sum then pins down how much any remaining
+suffix can contribute, so branch and bound cuts most of the tree. Memory is
+negligible and it reaches 39 base-4 digits, or 64 in base 3.
 
-All arithmetic is exact 128-bit integer arithmetic. Floating point is used only
-for timing.
+`multibase.cpp` is the same solver for any base, with two optional filters:
+`--parity` uses the parity theorem, `--mod` and `--mod2` track which residues
+modulo 64 and 63 the rest of the digits can still reach. Both are worth a
+constant factor and neither changes the answer.
+
+All arithmetic is 128-bit integer. Floating point is used only for timing.
 
 ## Prior work
 
-The general idea is not new. Keith-number searches were reduced to bounded linear
-Diophantine equations decades ago. Ken Sherriff published an equation-splitting
-lookup-table method in 1994. Mike Keith later described improved exhaustive
-searches, and Daniel Lichtblau published a lattice and integer-programming
-approach in 2006.
+The reduction to bounded linear Diophantine equations is old. Keith-number
+searches were done this way decades ago. Ken Sherriff published an
+equation-splitting method in 1994. Daniel Lichtblau published a lattice and
+integer-programming approach in 2006 and used it to find all base-10 Keith
+numbers up to 29 digits, which is still far beyond what the method here reaches
+in base 10.
 
-This repo contributes the base 4 computation and its reproducible output, not the
-invention of equation splitting.
+This method beats the lattice approach below base 4 and loses above it; see
+[notes.md](notes.md) for the measured crossover.
 
-References:
+What is here is the base 3 to 9 computation and its output, not the invention of
+any of this.
 
 - [Mike Keith, Keith Numbers](https://www.cadaeic.net/keithnum.htm)
-- [MathWorld bibliography for Keith numbers](https://mathworld.wolfram.com/KeithNumber.html)
-- [Daniel Lichtblau, Making Change and Finding Repfigits: Balancing a Knapsack](https://doi.org/10.1007/11832225_16)
+- [MathWorld](https://mathworld.wolfram.com/KeithNumber.html)
+- [Lichtblau, Making Change and Finding Repfigits](https://doi.org/10.1007/11832225_16)

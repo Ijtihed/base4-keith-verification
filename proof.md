@@ -1,53 +1,53 @@
-# Why the terms are minimal
+# Why nothing was missed
 
-The last published term of A188196 is:
-
-```text
-L = 24453922692
-```
-
-The search covers one uninterrupted interval:
+For base 4 the search covers one unbroken interval:
 
 ```text
-L + 1 through 4^34 - 1
+24453922693  through  4^39 - 1
 ```
 
-For each base 4 digit length, both programs generate every recurrence position
-that can reach that interval. The lower bound on a position is the value of the
-smallest legal digit assignment, the upper bound is the value of the largest.
-A position below the block is skipped and a position above it ends the loop,
-because the coefficients of the generated terms never decrease. (The initial
-coordinate vectors are not monotone; the argument applies from `m = k + 1` on.)
+For each digit length both programs work out every recurrence position that could
+land in that block. A position is skipped when even the largest digits fall short
+of it, and the loop stops when even the smallest leading digit overshoots. That
+stopping rule is valid because the coefficients of the generated terms never
+shrink. It applies from `m = k+1` on; the starting basis vectors are not monotone,
+so the induction has to begin there.
 
-At each position the Keith condition is one exact linear equation in the digits.
-Both programs enumerate every legal digit assignment, and every match is checked
-again by running the recurrence directly, so a reported candidate cannot be an
-artifact of the equation.
+At each position the condition is one exact linear equation in the digits. Both
+programs try every legal digit string, and every match is checked again by
+running the recurrence directly. A reported term cannot be an artefact of the
+equation.
 
-The complete output contains exactly the values in `terms.tsv`, in increasing
-order. Therefore:
+The output is exactly the terms in `terms.tsv`, in order. So:
 
 - every listed value is a base 4 Keith number;
-- no base 4 Keith number was skipped between `L` and any listed value;
-- the values are exactly `a(34)` through `a(57)`;
-- any base 4 Keith number beyond `a(57)` is greater than `4^34 - 1`.
+- nothing was skipped between `a(33)` and any listed value;
+- they are `a(34)` through `a(67)`;
+- any further term is greater than `4^39 - 1`.
 
 ## What was actually run
 
-Membership of every term was checked three ways: by `search.cpp`, by
-`verify.py` with Python integers, and by the `IsKeith[n,b]` function published on
-the OEIS entry.
+Membership was checked three ways: by the solver, by `verify.py` with Python
+integers, and by the `IsKeith[n,b]` function on the OEIS entry.
 
-Minimality up to `4^28 - 1` was produced independently by both programs here,
-which use different engines and share no search code. Recorded output from both
-runs is in `results`.
+Up to `4^28 - 1` both programs produced the result independently. They share no
+search code. Recorded output from both is in `results`.
 
-Minimality from `4^28` to `4^34 - 1` comes from `search.cpp`; the meet in the
-middle cannot reach those widths. That range was reproduced by a separate
-branch-and-bound implementation written by Aabir Fauzan while auditing this
-repo, which agreed on every term and on the equation list.
+From `4^28` to `4^39 - 1` only `search.cpp` can reach; the meet in the middle
+runs out of memory. That range was also reproduced by a separate branch-and-bound
+implementation written by Aabir Fauzan while auditing this repo, which agreed on
+every term and on the equation list.
 
-That audit also found the defects fixed here: a stale source hash in
-`minimality.json`, checkers that used `assert` and so did nothing under
-`python -O`, checkers that accepted corrupted result tables, and a
-non-terminating input range in `exhaustive.cpp`.
+`multibase/minimality.py` does the same for the other bases. It rebuilds every
+equation list without touching the solver, checks the digit-length blocks tile
+the range with no gap, and re-runs the recurrence on every term: 2090 equations
+across eight bases.
+
+One limitation worth stating. Past the reach of the meet in the middle there is
+no unpruned enumeration. The guarantee there rests on the branch-and-bound
+bounds being exact, and on independent implementations, compilers and filters
+agreeing wherever they can both run.
+
+That audit also turned up the defects fixed here: a stale source hash, checkers
+that used `assert` and so did nothing under `python -O`, checkers that accepted
+corrupted result tables, and an input range that did not terminate.
