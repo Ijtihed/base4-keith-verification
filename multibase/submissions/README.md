@@ -13,37 +13,37 @@ carries the extension.
 
 | base | sequence | published | after | new | largest term |
 |---:|---|---:|---:|---:|---|
-| 3 | A188195 | 46 | 107 | +61 | 125384254144254375224690... |
-| 4 | A188196 | 57 | 67 | +10 | 140166846496547728943038 |
-| 5 | A187713 | 42 | 92 | +50 | 635003755409663074123 |
-| 6 | A188197 | 58 | 83 | +25 | 3967501249983705443 |
-| 7 | A188198 | 53 | 77 | +24 | 1185254128119114590 |
-| 8 | A188199 | 55 | 70 | +15 | 860614330476688400 |
-| 9 | A188200 | 68 | 82 | +14 | 139753963178518052 |
+| 3 | A188195 | 46 | 114 | +68 | 877474665730740099503528... |
+| 4 | A188196 | 57 | 69 | +12 | 442553198209796954668221... |
+| 5 | A187713 | 42 | 99 | +57 | 10085447433274486323082 |
+| 6 | A188197 | 58 | 86 | +28 | 155004865632509365831 |
+| 7 | A188198 | 53 | 78 | +25 | 20328142566705958100 |
+| 8 | A188199 | 55 | 73 | +18 | 27424272456916626103 |
+| 9 | A188200 | 68 | 88 | +20 | 10663796184944693088 |
 
 ---
 
 ## A188195 (base 3)
 
-Published: 46 terms (source: b-file). After: 107. New: 61.
+Published: 46 terms (source: b-file). After: 114. New: 68.
 
 1. Upload `multibase/bfiles/b188195.txt` as the b-file.
 2. Leave DATA unchanged.
 3. Add to LINKS:
 
 ```
-_Ijtihed Kilani_, <a href="/A188195/b188195.txt">Table of n, a(n) for n = 1..107</a>
+_Ijtihed Kilani_, <a href="/A188195/b188195.txt">Table of n, a(n) for n = 1..114</a>
 ```
 
 4. Add to EXTENSIONS:
 
 ```
-a(47)-a(107) from _Ijtihed Kilani_, Sep 10 2026
+a(47)-a(114) from _Ijtihed Kilani_, Sep 10 2026
 ```
 
 ## A188196 (base 4)
 
-Published: 57 terms (source: b-file). After: 67. New: 10.
+Published: 57 terms (source: b-file). After: 69. New: 12.
 
 A follow-up: this entry already carries a b-file and a LINKS entry from
 the earlier submission, so replace them rather than adding new ones.
@@ -53,101 +53,101 @@ the earlier submission, so replace them rather than adding new ones.
 3. Update the existing LINKS entry to read:
 
 ```
-_Ijtihed Kilani_, <a href="/A188196/b188196.txt">Table of n, a(n) for n = 1..67</a>
+_Ijtihed Kilani_, <a href="/A188196/b188196.txt">Table of n, a(n) for n = 1..69</a>
 ```
 
 4. Add a second EXTENSIONS line below the existing one:
 
 ```
-a(58)-a(67) from _Ijtihed Kilani_, Sep 10 2026
+a(58)-a(69) from _Ijtihed Kilani_, Sep 10 2026
 ```
 
 ## A187713 (base 5)
 
-Published: 42 terms (source: b-file). After: 92. New: 50.
+Published: 42 terms (source: b-file). After: 99. New: 57.
 
 1. Upload `multibase/bfiles/b187713.txt` as the b-file.
 2. Leave DATA unchanged.
 3. Add to LINKS:
 
 ```
-_Ijtihed Kilani_, <a href="/A187713/b187713.txt">Table of n, a(n) for n = 1..92</a>
+_Ijtihed Kilani_, <a href="/A187713/b187713.txt">Table of n, a(n) for n = 1..99</a>
 ```
 
 4. Add to EXTENSIONS:
 
 ```
-a(43)-a(92) from _Ijtihed Kilani_, Sep 10 2026
+a(43)-a(99) from _Ijtihed Kilani_, Sep 10 2026
 ```
 
 ## A188197 (base 6)
 
-Published: 58 terms (source: b-file). After: 83. New: 25.
+Published: 58 terms (source: b-file). After: 86. New: 28.
 
 1. Upload `multibase/bfiles/b188197.txt` as the b-file.
 2. Leave DATA unchanged.
 3. Add to LINKS:
 
 ```
-_Ijtihed Kilani_, <a href="/A188197/b188197.txt">Table of n, a(n) for n = 1..83</a>
+_Ijtihed Kilani_, <a href="/A188197/b188197.txt">Table of n, a(n) for n = 1..86</a>
 ```
 
 4. Add to EXTENSIONS:
 
 ```
-a(59)-a(83) from _Ijtihed Kilani_, Sep 10 2026
+a(59)-a(86) from _Ijtihed Kilani_, Sep 10 2026
 ```
 
 ## A188198 (base 7)
 
-Published: 53 terms (source: b-file). After: 77. New: 24.
+Published: 53 terms (source: b-file). After: 78. New: 25.
 
 1. Upload `multibase/bfiles/b188198.txt` as the b-file.
 2. Leave DATA unchanged.
 3. Add to LINKS:
 
 ```
-_Ijtihed Kilani_, <a href="/A188198/b188198.txt">Table of n, a(n) for n = 1..77</a>
+_Ijtihed Kilani_, <a href="/A188198/b188198.txt">Table of n, a(n) for n = 1..78</a>
 ```
 
 4. Add to EXTENSIONS:
 
 ```
-a(54)-a(77) from _Ijtihed Kilani_, Sep 10 2026
+a(54)-a(78) from _Ijtihed Kilani_, Sep 10 2026
 ```
 
 ## A188199 (base 8)
 
-Published: 55 terms (source: b-file). After: 70. New: 15.
+Published: 55 terms (source: b-file). After: 73. New: 18.
 
 1. Upload `multibase/bfiles/b188199.txt` as the b-file.
 2. Leave DATA unchanged.
 3. Add to LINKS:
 
 ```
-_Ijtihed Kilani_, <a href="/A188199/b188199.txt">Table of n, a(n) for n = 1..70</a>
+_Ijtihed Kilani_, <a href="/A188199/b188199.txt">Table of n, a(n) for n = 1..73</a>
 ```
 
 4. Add to EXTENSIONS:
 
 ```
-a(56)-a(70) from _Ijtihed Kilani_, Sep 10 2026
+a(56)-a(73) from _Ijtihed Kilani_, Sep 10 2026
 ```
 
 ## A188200 (base 9)
 
-Published: 68 terms (source: b-file). After: 82. New: 14.
+Published: 68 terms (source: b-file). After: 88. New: 20.
 
 1. Upload `multibase/bfiles/b188200.txt` as the b-file.
 2. Leave DATA unchanged.
 3. Add to LINKS:
 
 ```
-_Ijtihed Kilani_, <a href="/A188200/b188200.txt">Table of n, a(n) for n = 1..82</a>
+_Ijtihed Kilani_, <a href="/A188200/b188200.txt">Table of n, a(n) for n = 1..88</a>
 ```
 
 4. Add to EXTENSIONS:
 
 ```
-a(69)-a(82) from _Ijtihed Kilani_, Sep 10 2026
+a(69)-a(88) from _Ijtihed Kilani_, Sep 10 2026
 ```

@@ -14,8 +14,8 @@ Fixing the digit sum then pins how much any remaining suffix can contribute, and
 the bound is exact for that digit sum, so pruning only drops branches that
 provably cannot reach the target. Memory is `O(k^2)`.
 
-That is the whole reason base 3 reached 64 digits. A table there would need
-`3^32`, about `1.85e15` entries.
+That is the whole reason base 3 reached 67 digits. A table there would need
+`3^34`, about `1.7e16` entries.
 
 ## Cost
 
@@ -23,17 +23,17 @@ Growth per extra digit, written as `b^e`:
 
 ```
 base   kmax   growth   b^e
-  3     64     1.578   e=0.415
-  4     39     1.961   e=0.486
-  5     30     2.329   e=0.525
-  7     22     3.224   e=0.602
-  6     24     2.977   e=0.609
-  8     20     3.684   e=0.627
-  9     18     4.154   e=0.648
+  3     67     1.578   e=0.415
+  4     41     1.961   e=0.486
+  5     32     2.329   e=0.525
+  7     23     3.224   e=0.602
+  6     26     2.977   e=0.609
+  8     22     3.684   e=0.627
+  9     20     4.154   e=0.648
 ```
 
 The exponent tracks how far each base got, not the base itself. Bases pushed far
-sit at or below 1/2; bases stuck near 18 digits have not settled yet. So the cost
+sit at or below 1/2; bases stuck near 20 digits have not settled yet. So the cost
 is about `b^(k/2)`, the same as meet in the middle, but without the memory.
 
 ## Where lattice reduction wins
@@ -99,6 +99,10 @@ does not move:
 base 9   k=10..15   17.2x -> 17.6x    e 0.634 -> 0.632
 base 4   k=20..27    3.08x ->  3.11x  e 0.449 -> 0.448
 ```
+
+Still worth having. Applied to the searches it bought one to three extra digits
+per base and 29 further Keith numbers; base 3 and base 5 gained seven each,
+base 7 only one.
 
 ## Dead end: 2-adic structure
 

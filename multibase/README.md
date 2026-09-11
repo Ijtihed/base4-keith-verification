@@ -4,20 +4,20 @@
 
 ```bash
 g++ -O3 -std=c++17 -pthread ../multibase.cpp -o multibase
-./multibase 3 3 3433683820292512484657849089280 4 > b3.tsv
+./multibase 3 3 92709463147897837085761925410586 4 --parity-first --mod2 > b3.tsv
 ```
 
 ## What was searched
 
 | base | OEIS | published | searched through | found | new |
 |---:|---|---:|---|---:|---:|
-| 3 | A188195 | 46 | 3^64 - 1 | 107 | +61 |
-| 4 | A188196 | 33 | 4^39 - 1 | 67 | +34 |
-| 5 | A187713 | 42 | 5^30 - 1 | 92 | +50 |
-| 6 | A188197 | 58 | 6^24 - 1 | 83 | +25 |
-| 7 | A188198 | 53 | 7^22 - 1 | 77 | +24 |
-| 8 | A188199 | 55 | 8^20 - 1 | 70 | +15 |
-| 9 | A188200 | 68 | 9^18 - 1 | 82 | +14 |
+| 3 | A188195 | 46 | 3^67 - 1 | 114 | +68 |
+| 4 | A188196 | 33 | 4^41 - 1 | 69 | +36 |
+| 5 | A187713 | 42 | 5^32 - 1 | 99 | +57 |
+| 6 | A188197 | 58 | 6^26 - 1 | 86 | +28 |
+| 7 | A188198 | 53 | 7^23 - 1 | 78 | +25 |
+| 8 | A188199 | 55 | 8^22 - 1 | 73 | +18 |
+| 9 | A188200 | 68 | 9^20 - 1 | 88 | +20 |
 
 Every published term was reproduced from scratch first.
 
@@ -55,15 +55,14 @@ the cost grows.
 
 ```
 base  kmax  equations  terms
-  3    64      523      107
-  4    39      343       67
-  5    30      262       92
-  6    24      214       83
-  7    22      204       77
-  8    20      198       70
-  9    18      177       82
- 10    17      169       63
+  3    67       552     114
+  4    41       363      69
+  5    32       282      99
+  6    26       235      86
+  7    23       215      78
+  8    22       222      73
+  9    20       201      88
 ```
 
-2090 equations, all passing. Run `python minimality.py`. It needs the per-width
+2070 equations, all passing. Run `python minimality.py`. It needs the per-width
 block files, which are not committed; regenerate them with the solver first.
