@@ -3,8 +3,8 @@
 Exhaustive searches for Keith numbers in bases 3 to 10.
 
 Base 4 is [A188196](https://oeis.org/A188196). The published list ended at
-`a(33) = 24453922692`. This repo found `a(34)` through `a(69)`. The first 57 went
-into OEIS on 2026-09-10.
+`a(33) = 24453922692`. This repo found `a(34)` through `a(69)`. Of those,
+`a(34)` to `a(57)` are now in OEIS.
 
 The same solver runs in any base. Every published term was reproduced from
 scratch first, then the search carried on.
@@ -15,10 +15,10 @@ scratch first, then the search carried on.
 | 4 | [A188196](https://oeis.org/A188196) | 33 | 69 | +36 | `4^41 - 1` |
 | 5 | [A187713](https://oeis.org/A187713) | 42 | 99 | +57 | `5^32 - 1` |
 | 6 | [A188197](https://oeis.org/A188197) | 58 | 86 | +28 | `6^26 - 1` |
-| 7 | [A188198](https://oeis.org/A188198) | 53 | 78 | +25 | `7^23 - 1` |
-| 8 | [A188199](https://oeis.org/A188199) | 55 | 73 | +18 | `8^22 - 1` |
-| 9 | [A188200](https://oeis.org/A188200) | 68 | 88 | +20 | `9^20 - 1` |
-| | | **355** | **607** | **+252** | |
+| 7 | [A188198](https://oeis.org/A188198) | 53 | 81 | +28 | `7^24 - 1` |
+| 8 | [A188199](https://oeis.org/A188199) | 55 | 75 | +20 | `8^23 - 1` |
+| 9 | [A188200](https://oeis.org/A188200) | 68 | 92 | +24 | `9^22 - 1` |
+| | | **355** | **616** | **+261** | |
 
 Base 10 was a control, not an extension. [A007629](https://oeis.org/A007629) is
 already known to 45 digits by lattice reduction, which beats this method above

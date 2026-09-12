@@ -43,7 +43,7 @@ and on the filters agreeing with each other.
 
 `multibase/minimality.py` does the same for the other bases. It rebuilds every
 equation list without touching the solver, checks the digit-length blocks tile
-the range with no gap, and re-runs the recurrence on every term: 2070 equations
+the range with no gap, and re-runs the recurrence on every term: 2115 equations
 across seven bases.
 
 One limitation worth stating. Past the reach of the meet in the middle there is
