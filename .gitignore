@@ -11,3 +11,6 @@ search-clang
 /want.txt
 __pycache__/
 multibase_bin
+multibase/blocks/
+multibase/indep/
+multibase/ext_b*.json

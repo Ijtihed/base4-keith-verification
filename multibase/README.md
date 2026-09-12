@@ -15,9 +15,9 @@ g++ -O3 -std=c++17 -pthread ../multibase.cpp -o multibase
 | 4 | A188196 | 33 | 4^41 - 1 | 69 | +36 |
 | 5 | A187713 | 42 | 5^32 - 1 | 99 | +57 |
 | 6 | A188197 | 58 | 6^26 - 1 | 86 | +28 |
-| 7 | A188198 | 53 | 7^23 - 1 | 78 | +25 |
-| 8 | A188199 | 55 | 8^22 - 1 | 73 | +18 |
-| 9 | A188200 | 68 | 9^20 - 1 | 88 | +20 |
+| 7 | A188198 | 53 | 7^24 - 1 | 81 | +28 |
+| 8 | A188199 | 55 | 8^23 - 1 | 75 | +20 |
+| 9 | A188200 | 68 | 9^22 - 1 | 92 | +24 |
 
 Every published term was reproduced from scratch first.
 
@@ -59,10 +59,10 @@ base  kmax  equations  terms
   4    41       363      69
   5    32       282      99
   6    26       235      86
-  7    23       215      78
-  8    22       222      73
-  9    20       201      88
+  7    24       226      81
+  8    23       234      75
+  9    22       223      92
 ```
 
-2070 equations, all passing. Run `python minimality.py`. It needs the per-width
+2115 equations, all passing. Run `python minimality.py`. It needs the per-width
 block files, which are not committed; regenerate them with the solver first.

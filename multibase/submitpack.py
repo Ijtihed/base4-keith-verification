@@ -15,7 +15,7 @@ os.makedirs(OUT, exist_ok=True)
 
 SEQ  = {3:"A188195", 4:"A188196", 5:"A187713", 6:"A188197",
         7:"A188198", 8:"A188199", 9:"A188200"}
-DATE = "Sep 10 2026"
+DATE = "Sep 12 2026"
 NAME = "Ijtihed Kilani"
 
 def fetch(url):
@@ -45,8 +45,10 @@ def is_keith(n,b):
 rows=[]
 for b, seq in sorted(SEQ.items()):
     pub, src = published_terms(seq)
-    ours = [int(l.split()[1]) for l in
-            open(os.path.join(REPO,"multibase","bfiles",f"b{seq[1:]}.txt"))]
+    # base 4 is the original submission, so its b-file sits at the repo root
+    bpath = (os.path.join(REPO, "b188196.txt") if b == 4
+             else os.path.join(REPO, "multibase", "bfiles", f"b{seq[1:]}.txt"))
+    ours = [int(l.split()[1]) for l in open(bpath)]
 
     assert ours[:len(pub)] == pub, f"{seq}: published prefix mismatch"
     assert all(is_keith(x,b) for x in ours), f"{seq}: a term fails the recurrence"
@@ -57,7 +59,7 @@ for b, seq in sorted(SEQ.items()):
         new=len(ours)-len(pub), first_new=len(pub)+1,
         link=f'_{NAME}_, <a href="/{seq}/b{seq[1:]}.txt">Table of n, a(n) for n = 1..{len(ours)}</a>',
         extensions=f"a({len(pub)+1})-a({len(ours)}) from _{NAME}_, {DATE}",
-        bfile=f"multibase/bfiles/b{seq[1:]}.txt",
+        bfile=os.path.relpath(bpath, REPO).replace("\\", "/"),
         largest=str(ours[-1]),
     ))
 

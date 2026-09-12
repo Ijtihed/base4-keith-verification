@@ -26,10 +26,10 @@ base   kmax   growth   b^e
   3     67     1.578   e=0.415
   4     41     1.961   e=0.486
   5     32     2.329   e=0.525
-  7     23     3.224   e=0.602
+  7     24     3.224   e=0.602
   6     26     2.977   e=0.609
-  8     22     3.684   e=0.627
-  9     20     4.154   e=0.648
+  8     23     3.684   e=0.627
+  9     22     4.154   e=0.648
 ```
 
 The exponent tracks how far each base got, not the base itself. Bases pushed far
